@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Jumanji</title>
+<style>
+:root{--bg:#fff7e6;--card:#fff;--ink:#2b2d42;--mut:#6b6f85;--pri:#ff7a00;--ok:#2bb673;--bad:#ef476f;--blue:#4895ef;--line:#ffe0b3;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1d1b2e;--card:#2a2842;--ink:#f4f1ff;--mut:#b5b2d1;--line:#3d3a60}}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Segoe UI",Tahoma,system-ui,sans-serif;min-height:100vh}
+#app{max-width:560px;margin:0 auto;padding:16px}
+h1{font-size:2.4rem;margin:8px 0;text-align:center;color:var(--pri);letter-spacing:1px}
+h2{text-align:center;margin:6px 0 14px}
+.sub{text-align:center;color:var(--mut);margin:0 0 16px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px}
+.btn{border:0;border-radius:18px;padding:14px;font:inherit;font-weight:700;font-size:1.1rem;color:#fff;background:var(--pri);cursor:pointer;width:100%;box-shadow:0 4px 0 rgba(0,0,0,.18)}
+.btn:active{transform:translateY(3px);box-shadow:none}
+.btn.blue{background:var(--blue)}.btn.green{background:var(--ok)}.btn.gray{background:var(--mut)}
+.btn[disabled]{opacity:.45}
+.row{display:flex;gap:10px;margin:12px 0}
+.v{font-size:3rem;direction:ltr;padding:22px 0}
+.card{background:var(--card);border:2px solid var(--line);border-radius:20px;padding:12px;text-align:center;cursor:pointer;direction:ltr}
+.card:active{transform:scale(.97)}
+.em{font-size:3.4rem;line-height:1.2}
+.w{font-size:1.6rem;font-weight:800}
+.w b{color:var(--pri)}
+.ar{font-size:.9rem;color:var(--mut);direction:rtl}
+.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.back{background:none;border:0;font:inherit;font-size:1rem;color:var(--blue);cursor:pointer;font-weight:700}
+.bar{height:10px;background:var(--line);border-radius:9px;overflow:hidden;margin:6px 0 16px}
+.bar i{display:block;height:100%;background:var(--ok);transition:width .3s}
+.big{font-size:6rem;text-align:center;margin:6px 0}
+.say{display:block;margin:0 auto 14px;width:90px;height:90px;border-radius:50%;border:0;background:var(--blue);font-size:2.4rem;cursor:pointer;box-shadow:0 5px 0 rgba(0,0,0,.2)}
+.opts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;direction:ltr}
+.opt{background:var(--card);border:3px solid var(--line);border-radius:18px;padding:14px 4px;font:inherit;color:var(--ink);cursor:pointer}
+.opt.e{font-size:3rem}.opt.t{font-size:1.5rem;font-weight:800}
+.opt.good{border-color:var(--ok);background:rgba(43,182,115,.2)}
+.opt.bad{border-color:var(--bad);background:rgba(239,71,111,.2);animation:sh .3s}
+@keyframes sh{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.slots,.tiles{display:flex;gap:8px;justify-content:center;direction:ltr;margin:12px 0}
+.slot{width:54px;height:62px;border-bottom:4px solid var(--pri);font-size:2rem;font-weight:800;text-align:center;line-height:62px}
+.tile{width:58px;height:58px;border-radius:14px;border:0;background:var(--pri);color:#fff;font-size:1.8rem;font-weight:800;cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,.2)}
+.tile[disabled]{opacity:.25}
+.ti{display:block;width:80%;margin:10px auto;font:inherit;font-size:2rem;font-weight:800;text-align:center;direction:ltr;border:3px solid var(--line);border-radius:16px;padding:10px;background:var(--card);color:var(--ink)}
+.ti.bad{border-color:var(--bad);animation:sh .3s}
+.pads{display:flex;gap:8px;justify-content:center;direction:ltr;margin:6px 0}
+.pad{position:relative;flex:1;max-width:110px;aspect-ratio:110/130;border:3px dashed var(--line);border-radius:16px;background:var(--card)}
+.pad .g{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font:bold min(24vw,92px) "Arial Rounded MT Bold",Arial,sans-serif;color:var(--pri);opacity:.13;pointer-events:none;user-select:none}
+.pad .g.p{opacity:.3}
+.pad canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none}
+.pad.wp{flex:1;max-width:100%;aspect-ratio:600/220}
+.pad canvas.gd{pointer-events:none}
+.aw{font-size:1.9rem;font-weight:700;line-height:1.9;direction:rtl;font-family:Tahoma,"Noto Naskh Arabic",system-ui,sans-serif}
+.pad .g.ar{font-family:Tahoma,"Noto Naskh Arabic",Arial,sans-serif}
+.fb{text-align:center;font-size:1.3rem;font-weight:800;min-height:34px;margin-top:14px}
+.stars{font-size:3.4rem;text-align:center}
+.best{font-size:.85rem;opacity:.9}
+.segs{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;direction:ltr;margin:16px 0}
+.segs.rtl{direction:rtl}
+.seg{min-width:64px;padding:8px 14px;border:3px solid var(--line);border-radius:16px;background:var(--card);color:var(--ink);font:inherit;font-size:3.2rem;font-weight:800;cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,.12);transition:transform .15s}
+.seg.vw{color:var(--pri);border-color:var(--pri)}
+.seg.ar{font-family:Tahoma,"Noto Naskh Arabic",system-ui,sans-serif;font-size:2.6rem;line-height:1.9}
+.seg.on{background:var(--pri);border-color:var(--pri);color:#fff;transform:scale(1.12)}
+.steps{background:var(--card);border:2px dashed var(--line);border-radius:18px;padding:12px 16px;line-height:2;margin:10px 0 14px}
+.forms{display:grid;grid-template-columns:repeat(auto-fit,minmax(72px,1fr));gap:8px;margin:8px 0 14px}
+.fm{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:6px 2px;text-align:center}
+.fm b{display:block;font-size:2.6rem;line-height:1.7;font-family:Tahoma,"Noto Naskh Arabic",system-ui,sans-serif}
+.fm small{color:var(--mut);font-size:.75rem}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+const SETS={
+ a:{title:'Short a',words:[['cap','🧢','قبعة'],['tap','🚰','حنفية'],['lap','🧘','حِجر'],['fat','🐷','سمين'],['rat','🐀','فأر'],['mat','🟫','سجادة'],['can','🥫','علبة'],['fan','🌬️','مروحة'],['man','👨','رجل']]},
+ e:{title:'Short e',words:[['pen','🖊️','قلم'],['hen','🐔','دجاجة'],['ten','🔟','عشرة'],['den','🦁','عرين'],['jet','✈️','طائرة'],['wet','💦','مبلل'],['pet','🐱','حيوان أليف'],['vet','👨‍⚕️','طبيب بيطري']]},
+ i:{title:'Short i',words:[['ship','🚢','سفينة'],['lip','👄','شفة'],['dip','🍟','يغمس'],['knit','🧶','يحيك'],['hit','🥊','يضرب'],['sit','🪑','يجلس'],['mix','🥣','يخلط'],['fix','🔧','يصلّح'],['six','6️⃣','ستة']]},
+ o:{title:'Short o',words:[['fog','🌫️','ضباب'],['frog','🐸','ضفدع'],['jog','👟','يهرول'],['log','🪵','جذع شجرة'],['pop','🎈','فرقعة'],['mop','🧹','ممسحة'],['hop','🐇','يقفز'],['top','🔝','فوق']]},
+ u:{title:'Short u',words:[['run','🏃','يجري'],['bun','🍞','خبز'],['sun','☀️','شمس'],['up','⬆️','لفوق'],['cup','☕','كوب'],['pup','🐶','جرو'],['cut','✂️','يقص'],['hut','🏚️','كوخ'],['nut','🥜','مكسرات']]}
+};
+const VCOL=['#ff7a00','#4895ef','#2bb673','#9b5de5','#ef476f'];
+const ALL=[].concat(...Object.keys(SETS).map(k=>SETS[k].words));
+const V=['A','E','I','O','U'];
+let best={};try{best=JSON.parse(localStorage.getItem('jumanji')||'{}')}catch(e){}
+function save(k,v){if((best[k]||0)<v){best[k]=v;try{localStorage.setItem('jumanji',JSON.stringify(best))}catch(e){}}}
+const $=document.getElementById('app');
+const sh=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+let VO=null;
+function pickVoice(){try{const vs=speechSynthesis.getVoices().filter(v=>/^en/i.test(v.lang));VO=vs.find(v=>/samantha|google us|zira|aria|jenny|karen/i.test(v.name))||vs.find(v=>/en-US/i.test(v.lang))||vs[0]||null}catch(e){}}
+try{speechSynthesis.onvoiceschanged=pickVoice;pickVoice()}catch(e){}
+function mk(t,r,p){const u=new SpeechSynthesisUtterance(t);u.lang='en-US';u.rate=r;u.pitch=p||1.1;if(VO)u.voice=VO;return u}
+function speak(t,r){try{seq++;const s=window.speechSynthesis;s.cancel();s.speak(mk(t,r||.8))}catch(e){}}
+let seq=0;
+/* Phonics: letter SOUNDS (not names). Edit the respellings here if a sound is not clear on your phone. */
+const PH={a:'#a',e:'#e',i:'#i',o:'#o',u:'#u',b:'buh',c:'kuh',d:'duh',f:'fuh',g:'guh',h:'huh',j:'juh',k:'kuh',l:'luh',m:'muh',n:'nuh',p:'puh',q:'kwuh',r:'ruh',s:'suh',t:'tuh',v:'vuh',w:'wuh',x:'ks',y:'yuh',z:'zuh'};
+const SPL={ship:['sh','ip'],knit:['n','it'],frog:['fr','og'],up:['','up']};
+const ONS={sh:'#sh',fr:'fruh'};
+function split(w){if(SPL[w])return SPL[w];let i=0;while(i<w.length&&!'aeiou'.includes(w[i]))i++;return[w.slice(0,i),w.slice(i)]}
+function spell(w){try{const s=window.speechSynthesis;s.cancel();const id=++seq;
+ const RM={ap:'app',at:'at',an:'an',en:'en',et:'ett'};const[on,ri]=split(w);const parts=[];
+ if(on)parts.push([ONS[on]||PH[on]||on,.5,500]);parts.push([w,.35,800],[w,.8,800]);
+ let i=0;const go=()=>{if(id!==seq||i>=parts.length)return;const[t,r,d]=parts[i++];
+  setTimeout(()=>{if(id!==seq)return;if(t[0]==='#'){synth(t.slice(1)).then(go);return}const u=mk(t,r,1.1);u.onend=go;s.speak(u)},i===1?0:d)};go()}catch(e){}}
+let G=null,cur=null;
+
+function home(){
+ cur='home';
+ $.innerHTML=`<div class="top"><button class="back" onclick="showLang()">→ اللغة · Language</button><span></span></div><h1>🦁 Jumanji</h1><p class="sub">اتعلم الكلمات بالصور والصوت!</p>
+ <div class="row"><button class="btn" style="background:#9b5de5" onclick="enAlpha()">🔠 الحروف A–Z<div class="best">الشكل · الصوت · الكتابة</div></button><button class="btn green" onclick="readMenu()">📖 تعلّم القراءة</button></div>
+ <h2>5 Vowels</h2>
+ <div class="grid">${V.map((v,i)=>{const k=v.toLowerCase(),ok=SETS[k];return `<button class="btn ${ok?'':'gray'}" ${ok?`onclick="setPage('${k}')"`:'disabled'} style="background:${ok?VCOL[i]:''}"><div class="v">${v}</div>${ok?SETS[k].title:'قريبًا'}</button>`}).join('')}</div>
+ <div class="row"><button class="btn green" onclick="start('mix','quiz')">🏆 اختبار شامل ${best.mix?'<div class="best">أفضل: '+best.mix+'⭐</div>':''}</button></div>`;
+}
+function setPage(k){
+ cur=k;const S=SETS[k];
+ $.innerHTML=`<div class="top"><button class="back" onclick="home()">→ رجوع</button><span></span></div>
+ <h2>${S.title}</h2><p class="sub">اضغط على الكارت واسمع أصوات الحروف ثم الكلمة 🔤</p>
+ <div class="grid">${S.words.map((w,i)=>`<div class="card" onclick="spell('${w[0]}')"><div class="em">${w[1]}</div><div class="w">${w[0][0]}<b>${w[0][1]}</b>${w[0].slice(2)}</div><div class="ar">${w[2]}</div></div>`).join('')}</div>
+ <div class="row"><button class="btn green" onclick="readStart('${k}')">📖 اتعلّم أقرأ الكلمات دى</button></div>
+ <div class="row"><button class="btn" style="background:#9b5de5" onclick="start('${k}','quiz','type')">✍️ اختبار الكتابة ${best[k+'_t']?'<div class="best">أفضل: '+best[k+'_t']+'⭐</div>':''}</button></div>
+ <div class="row"><button class="btn blue" onclick="start('${k}','practice')">🎯 تدريب</button><button class="btn green" onclick="start('${k}','quiz')">🏆 اختبار ${best[k]?'<div class="best">أفضل: '+best[k]+'⭐</div>':''}</button></div>`;
+}
+function start(k,mode,only){
+ const pool=k==='mix'?ALL:SETS[k].words;
+ const n=mode==='quiz'?(k==='mix'?10:Math.min(8,pool.length)):pool.length;
+ let ws=sh(pool);while(ws.length<n)ws=ws.concat(sh(pool));
+ const T=only?[only]:['hear','see','build','type'];
+ G={k,mode,only,pool,i:0,score:0,qs:ws.slice(0,n).map((w,i)=>({w,t:T[i%T.length],miss:false}))};
+ sh(G.qs);question();
+}
+function question(){
+ const q=G.qs[G.i],w=q.w[0];G.lock=false;G.pos=[];
+ const pct=G.i/G.qs.length*100;
+ let body='';
+ const others=sh(ALL.filter(x=>x[0]!==w)).slice(0,2);
+ if(q.t==='hear'){
+  q.opts=sh([q.w,...others]);
+  body=`<p class="sub">اسمع وأختار الصورة الصح</p><button class="say" onclick="speak('${w}')">🔊</button>
+  <div class="opts">${q.opts.map((o,i)=>`<button class="opt e" onclick="pick(${i})">${o[1]}</button>`).join('')}</div>`;
+ }else if(q.t==='see'){
+  q.opts=sh([q.w,...others]);
+  body=`<p class="sub">إيه اسم الصورة دى؟</p><div class="big">${q.w[1]}</div><button class="say" onclick="speak('${w}')">🔊</button>
+  <div class="opts">${q.opts.map((o,i)=>`<button class="opt t" onclick="pick(${i})">${o[0]}</button>`).join('')}</div>`;
+ }else if(q.t==='type'){
+  body=typeBody(q);
+ }else{
+  q.tiles=sh(w.split(''));
+  body=`<p class="sub">رتّب الحروف عشان تكتب الكلمة</p><div class="big">${q.w[1]}</div><button class="say" onclick="speak('${w}')">🔊</button>
+  <div class="slots" id="slots"></div><div class="tiles" id="tiles"></div>
+  <div class="row" style="justify-content:center"><button class="btn gray" style="width:auto" onclick="undo()">↩️ مسح</button></div>`;
+ }
+ $.innerHTML=`<div class="top"><button class="back" onclick="${G.k==='mix'?'home':`setPage`}(${G.k==='mix'?'':`'${G.k}'`})">→ خروج</button><b>⭐ ${G.score}</b></div>
+ <div class="bar"><i style="width:${pct}%"></i></div>${body}<div class="fb" id="fb"></div>`;
+ if(q.t==='build')drawBuild();
+ if(q.t==='type')initPads();
+ if(q.t!=='see')setTimeout(()=>speak(w),300);
+}
+function fb(ok,msg){const f=document.getElementById('fb');f.textContent=msg;f.style.color=ok?'var(--ok)':'var(--bad)'}
+function done(ok,btn){
+ const q=G.qs[G.i];
+ if(ok){if(!q.miss)G.score++;fb(true,'برافو! 🎉 Good job!');cheer(q.w[0]);G.lock=true;setTimeout(next,2300);}
+ else{q.miss=true;oops();
+  if(G.mode==='practice'){fb(false,'حاول تانى 💪');if(btn){btn.classList.add('bad');setTimeout(()=>btn.classList.remove('bad'),500)}return false}
+  fb(false,'الإجابة: '+q.w[0]);speak(q.w[0]);G.lock=true;setTimeout(next,1800);
+ }
+ return true;
+}
+let AC;
+function ctx(){AC=AC||new (window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume();return AC}
+function note(f,t,d,vol,type){const c=ctx(),o=c.createOscillator(),g=c.createGain();o.type=type||'sine';o.frequency.value=f;g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(vol,t+.02);g.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(g);g.connect(c.destination);o.start(t);o.stop(t+d+.05)}
+function chime(){try{const t=ctx().currentTime+.02;[523.25,659.25,783.99,1046.5].forEach((f,i)=>{note(f,t+i*.11,.5,.22,'triangle');note(f*2,t+i*.11,.35,.05,'sine')});note(1318.5,t+.5,.9,.16,'triangle');note(1568,t+.5,.9,.08,'sine')}catch(e){}}
+function oops(){try{const t=ctx().currentTime+.02;note(330,t,.25,.15,'sine');note(262,t+.18,.4,.15,'sine')}catch(e){}}
+function cheer(w){chime();try{seq++;const s=window.speechSynthesis;s.cancel();const P=['Good job!','Great job!','Excellent!','Well done!','Awesome!'];
+ setTimeout(()=>{s.speak(mk(P[Math.floor(Math.random()*P.length)],.9,1.25));s.speak(mk(w,.8))},600)}catch(e){}}
+const PW=110,PHT=130,GF='bold 100px "Arial Rounded MT Bold",Arial,sans-serif';
+function typeBody(q){const w=q.w[0];
+ return `<p class="sub">اسمع واكتب كل حرف بصباعك ✍️</p><div class="big" style="font-size:4.5rem">${q.w[1]}</div><button class="say" onclick="speak('${w}')">🔊</button>
+ <div class="pads">${w.split('').map((c,i)=>`<div class="pad" id="pd${i}"><span class="g ${G.mode==='practice'?'p':''}">${c}</span><canvas id="cv${i}" width="${PW}" height="${PHT}"></canvas></div>`).join('')}</div>
+ <div class="row" style="justify-content:center"><button class="btn gray" style="width:auto" onclick="clearPads()">🧽 مسح</button><button class="btn green" style="width:auto;padding:14px 30px" onclick="checkPads()">تحقق ✅</button></div>`}
+function initPads(){document.querySelectorAll('.pad canvas:not(.gd)').forEach(cv=>{const x=cv.getContext('2d');x.lineWidth=+cv.dataset.lw||9;x.lineCap='round';x.lineJoin='round';x.strokeStyle='#4895ef';x.fillStyle='#4895ef';let d=false,lx=0,ly=0;
+ const pt=e=>{const r=cv.getBoundingClientRect();return[(e.clientX-r.left)*cv.width/r.width,(e.clientY-r.top)*cv.height/r.height]};
+ cv.onpointerdown=e=>{if(G.lock||cv.dataset.ok)return;d=true;try{cv.setPointerCapture(e.pointerId)}catch(_){}[lx,ly]=pt(e);x.beginPath();x.arc(lx,ly,4.5,0,7);x.fill();e.preventDefault()};
+ cv.onpointermove=e=>{if(!d)return;const[px,py]=pt(e);x.beginPath();x.moveTo(lx,ly);x.lineTo(px,py);x.stroke();lx=px;ly=py;e.preventDefault()};
+ cv.onpointerup=cv.onpointercancel=()=>{d=false}})}
+function clearPads(){if(G.lock)return;document.querySelectorAll('.pad canvas:not(.gd)').forEach(cv=>{if(!cv.dataset.ok)cv.getContext('2d').clearRect(0,0,cv.width,cv.height)})}
+function grid(data,w,h){let x0=w,y0=h,x1=-1,y1=-1;
+ for(let y=0;y<h;y++)for(let x=0;x<w;x++)if(data[(y*w+x)*4+3]>40){if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;if(y>y1)y1=y}
+ if(x1<0)return null;const N=16,g=new Uint8Array(N*N),bw=x1-x0+1,bh=y1-y0+1;
+ for(let y=y0;y<=y1;y++)for(let x=x0;x<=x1;x++)if(data[(y*w+x)*4+3]>40)g[Math.min(N-1,Math.floor((y-y0)*N/bh))*N+Math.min(N-1,Math.floor((x-x0)*N/bw))]=1;
+ return{g,sz:Math.max(bw,bh)}}
+function dil(g){const N=16,o=new Uint8Array(N*N);for(let y=0;y<N;y++)for(let x=0;x<N;x++)if(g[y*N+x])for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){const a=x+dx,b=y+dy;if(a>=0&&b>=0&&a<N&&b<N)o[b*N+a]=1}return o}
+function okLetter(cv,ch){const w=cv.width,h=cv.height,ink=grid(cv.getContext('2d').getImageData(0,0,w,h).data,w,h);
+ if(!ink||ink.sz<35)return false;
+ const t=document.createElement('canvas');t.width=w;t.height=h;const c=t.getContext('2d');c.font=cv.dataset.font||GF;c.textAlign='center';c.textBaseline='middle';c.fillStyle='#000';c.fillText(ch,w/2,h/2);
+ const tp=grid(c.getImageData(0,0,w,h).data,w,h);if(!tp)return true;
+ const D=dil(tp.g),I=dil(ink.g);let tc=0,th=0,ic=0,ih=0;
+ for(let i=0;i<256;i++){if(tp.g[i]){tc++;if(I[i])th++}if(ink.g[i]){ic++;if(D[i])ih++}}
+ return th/tc>=.6&&ih/ic>=.6}
+function checkPads(){if(G.lock)return;const q=G.qs[G.i],w=q.w[0],cvs=[...document.querySelectorAll('.pad canvas:not(.gd)')];let all=true;
+ cvs.forEach((cv,i)=>{const p=document.getElementById('pd'+i);if(cv.dataset.ok)return;
+  if(okLetter(cv,w[i])){cv.dataset.ok=1;p.style.borderColor='var(--ok)';p.style.borderStyle='solid'}else{all=false;p.style.borderColor='var(--bad)'}});
+ const fin=done(all);
+ if(!all&&!fin)cvs.forEach((cv,i)=>{if(!cv.dataset.ok)setTimeout(()=>{cv.getContext('2d').clearRect(0,0,cv.width,cv.height);document.getElementById('pd'+i).style.borderColor=''},800)});
+ if(!all&&fin)document.querySelectorAll('.g').forEach(g=>{g.style.opacity=1})}
+function pick(i){
+ if(G.lock)return;const q=G.qs[G.i],btn=document.querySelectorAll('.opt')[i];
+ const ok=q.opts[i][0]===q.w[0];
+ if(ok)btn.classList.add('good');
+ done(ok,btn);
+}
+function drawBuild(){
+ const q=G.qs[G.i],w=q.w[0];
+ document.getElementById('slots').innerHTML=w.split('').map((_,i)=>`<div class="slot">${G.pos[i]!==undefined?q.tiles[G.pos[i]]:''}</div>`).join('');
+ document.getElementById('tiles').innerHTML=q.tiles.map((c,i)=>`<button class="tile" ${G.pos.includes(i)?'disabled':''} onclick="tile(${i})">${c}</button>`).join('');
+}
+function tile(i){
+ if(G.lock)return;const q=G.qs[G.i],w=q.w[0];
+ G.pos.push(i);drawBuild();
+ if(G.pos.length===w.length){
+  const s=G.pos.map(p=>q.tiles[p]).join('');
+  const fin=done(s===w);
+  if(!fin)setTimeout(()=>{G.pos=[];drawBuild()},700);
+ }
+}
+function undo(){if(G.lock)return;G.pos.pop();drawBuild()}
+function next(){
+ G.i++;
+ if(G.i<G.qs.length)return question();
+ const n=G.qs.length,p=G.score/n,st=p>=.9?3:p>=.6?2:p>=.3?1:0;
+ if(G.mode==='quiz')save(G.k+(G.only?'_t':''),st);
+ $.innerHTML=`<h1>${G.mode==='quiz'?'🏆 النتيجة':'🎉 خلصت التدريب'}</h1>
+ <div class="stars">${'⭐'.repeat(st)}${'☆'.repeat(3-st)}</div>
+ <h2>${G.score} / ${n}</h2><p class="sub">${st===3?'ممتاز يا بطل! 🦁':st>=1?'كويس جدًا، كمّل! 💪':'حاول تانى وهتبقى أحسن 😊'}</p>
+ <div class="row"><button class="btn" onclick="start('${G.k}','${G.mode}','${G.only||''}')">🔁 مرة تانية</button><button class="btn blue" onclick="home()">🏠 الرئيسية</button></div>`;
+}
+/* ===== Arabic section ===== */
+const F='\u064E',D='\u064F',K='\u0650',MK=[F,D,K],LG={[F]:'ا',[D]:'و',[K]:'ي'},TN=['\u064B','\u064C','\u064D'];
+const AR=[
+['أ','الألف',[['أَسَدٌ','🦁'],['إِبْرَةٌ','🪡'],['أُذُنٌ','👂']]],
+['ب','الباء',[['بَقَرَةٌ','🐄'],['بِنْتٌ','👧'],['بُرْجٌ','🗼']]],
+['م','الميم',[['مَوْزٌ','🍌'],['مِلْحٌ','🧂'],['مُثَلَّثٌ','🔺']]],
+['ح','الحاء',[['حَبْلٌ','🪢'],['حِصَانٌ','🐴'],['حُوتٌ','🐋']]],
+['ج','الجيم',[['جَبَلٌ','⛰️'],['جَمَلٌ','🐪'],['جُبْنٌ','🧀']]],
+['د','الدال',[['دَجَاجٌ','🐔'],['دِيكٌ','🐓'],['دُبٌّ','🐻']]],
+['خ','الخاء',[['خَرُوفٌ','🐑'],['خِيَارٌ','🥒'],['خُبْزٌ','🍞']]],
+['ت','التاء',[['تَاجٌ','👑'],['تِينٌ','🟣'],['تُوتٌ','🫐']]],
+['ل','اللام',[['لَبَنٌ','🥛'],['لِسَانٌ','👅'],['لُعْبَةٌ','🧸']]],
+['س','السين',[['سَاعَةٌ','⏰'],['سِتَارَةٌ','🪟'],['سُلَّمٌ','🪜']]],
+['ن','النون',[['نَحْلٌ','🐝'],['نَسْرٌ','🦅'],['نُجُومٌ','⭐']]],
+['ر','الراء',[['رَأْسٌ','🙂'],['رِيشَةٌ','🪶'],['رُمَّانٌ','🔴']]],
+['ف','الفاء',[['فَأْرٌ','🐭'],['فِيلٌ','🐘'],['فُولٌ','🫘']]],
+['ك','الكاف',[['كَلْبٌ','🐶'],['كِتَابٌ','📖'],['كُرَةٌ','⚽']]],
+['ق','القاف',[['قَلَمٌ','✏️'],['قِرْدٌ','🐒'],['قُرُودٌ','🐵']]],
+['ي','الياء',[['يَدٌ','✋'],['يُوسُفِيٌّ','🍊']]],
+['ع','العين',[['عِنَبٌ','🍇'],['عَلَمٌ','🚩'],['عُشٌّ','🪺']]]];
+const AW=[];AR.forEach((x,li)=>x[2].forEach(w=>AW.push({w:w[0],e:w[1],li})));
+const rnd=n=>Math.floor(Math.random()*n);
+const clus=s=>{const r=[];for(const c of s){if(/[\u064B-\u0652]/.test(c)&&r.length)r[r.length-1]+=c;else r.push(c)}return r};
+let AVO=null,AA=null;
+function pickAr(){try{const vs=speechSynthesis.getVoices().filter(v=>/^ar/i.test((v.lang||'').replace('_','-')));AVO=vs.find(v=>/ar-EG/i.test(v.lang.replace('_','-')))||vs.find(v=>/ar-SA/i.test(v.lang.replace('_','-')))||vs[0]||null}catch(e){}}
+try{const _pv=speechSynthesis.onvoiceschanged;speechSynthesis.onvoiceschanged=()=>{try{pickVoice()}catch(e){}pickAr()};pickAr();setTimeout(pickAr,500);setTimeout(pickAr,1500)}catch(e){}
+function aStop(){try{speechSynthesis.cancel()}catch(e){}try{AUD.pause()}catch(e){}}
+/* Arabic speech that works on any phone with no settings:
+   1) online Arabic voice (same on every phone)  2) device Arabic voice if offline */
+const AUD=new Audio();AUD.preload='auto';AA=AUD;
+function onlineSay(t,r){return new Promise((ok,bad)=>{
+ let end=false;const fin=f=>{if(!end){end=true;clearTimeout(tm);AUD.onended=AUD.onerror=AUD.onplaying=null;f()}};
+ const tm=setTimeout(()=>fin(bad),5000);
+ try{AUD.pause();
+  AUD.onplaying=()=>{clearTimeout(tm);AUD.onplaying=null};
+  AUD.onended=()=>fin(ok);AUD.onerror=()=>fin(bad);
+  AUD.src='https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=ar&q='+encodeURIComponent(t);
+  AUD.playbackRate=(r||.7)<.8?.9:1;
+  const pr=AUD.play();if(pr&&pr.catch)pr.catch(()=>fin(bad))}catch(e){fin(bad)}})}
+function deviceSay(t,r,p){return new Promise(res=>{
+ let done=false;const t0=Date.now();const fin=ok=>{if(!done){done=true;res(ok)}};setTimeout(()=>fin(false),15000);
+ try{pickAr();const u=new SpeechSynthesisUtterance(t);u.lang=AVO?AVO.lang:'ar-SA';if(AVO)u.voice=AVO;u.rate=r||.7;u.pitch=p||1.1;
+  u.onend=()=>fin(Date.now()-t0>250);u.onerror=()=>fin(false);
+  speechSynthesis.cancel();setTimeout(()=>{try{speechSynthesis.speak(u)}catch(e){fin(false)}},60)}catch(e){fin(false)}})}
+let warned=false;
+function noAr(force){if(warned&&!force)return;warned=true;let d=document.getElementById('arwarn');if(d)d.remove();d=document.createElement('div');d.id='arwarn';
+ d.style.cssText='position:fixed;left:10px;right:10px;bottom:calc(10px + env(safe-area-inset-bottom,0px));background:#ef476f;color:#fff;border-radius:16px;padding:14px;z-index:99;font-size:.95rem;line-height:1.7;box-shadow:0 4px 14px rgba(0,0,0,.3);direction:rtl';
+ d.innerHTML='🔇 <b>الصوت العربي مش متاح على الموبايل ده.</b><br>الحل (مرة واحدة): الإعدادات ← إعدادات إضافية ← اللغة والإدخال ← <b>تحويل النص إلى كلام</b> ← المحرك المفضل <b>Google</b> ← ⚙️ ← <b>تثبيت بيانات الصوت</b> ← اختاري <b>العربية</b>. وبعدها اقفلي Chrome وافتحيه تاني.<br><button style="margin-top:8px;border:0;border-radius:10px;padding:8px 18px;font:inherit;font-weight:700" onclick="this.parentNode.remove()">تمام ✔</button>';
+ document.body.appendChild(d)}
+async function asay(t,r,p){pickAr();
+ if(AVO){if(await deviceSay(t,r,p))return}
+ try{await onlineSay(t,r);return}catch(e){}
+ if(!AVO){if(await deviceSay(t,r,p))return}
+ noAr()}
+function aspeak(t,r){seq++;aStop();setTimeout(()=>asay(t,r||.7),80)}
+function arCheer(t){chime();seq++;const id=seq;aStop();const P=['ممتاز!','أحسنت!','برافو عليك!','شاطر!'];setTimeout(async()=>{if(id!==seq)return;await asay(P[rnd(4)],.9,1.2);if(id!==seq)return;await asay(t,.7)},600)}
+/* ===== Whole-word writing with tashkeel (trace over the guide) ===== */
+const WW=600,WH=220,WS=4;
+function wordFont(ch){const c=document.createElement('canvas').getContext('2d');let z=150,f;
+ for(;z>50;z-=4){f=`bold ${z}px Tahoma,"Noto Naskh Arabic",Arial,sans-serif`;c.font=f;if(c.measureText(ch).width<=WW-70)break}return f}
+function paintWord(c,ch,font,strip){c.font=font;c.direction='rtl';c.textAlign='center';c.textBaseline='middle';c.fillText(strip?ch.replace(/[\u064B-\u0652]/g,''):ch,WW/2,WH/2+8)}
+function drawGuide(q,a){const g=document.querySelector('canvas.gd');if(!g)return;const c=g.getContext('2d');c.clearRect(0,0,WW,WH);c.globalAlpha=a;c.fillStyle='#ff7a00';paintWord(c,q.w[0],q.font,false);c.globalAlpha=1}
+const GW=Math.ceil(WW/WS),GH=Math.ceil(WH/WS);
+function cells(ctx){const d=ctx.getImageData(0,0,WW,WH).data,g=new Uint8Array(GW*GH);
+ for(let y=0;y<WH;y++)for(let x=0;x<WW;x++)if(d[(y*WW+x)*4+3]>40)g[((y/WS)|0)*GW+((x/WS)|0)]=1;return g}
+function dilW(g,r){const o=new Uint8Array(GW*GH);
+ for(let y=0;y<GH;y++)for(let x=0;x<GW;x++)if(g[y*GW+x])for(let dy=-r;dy<=r;dy++)for(let dx=-r;dx<=r;dx++){const a=x+dx,b=y+dy;if(a>=0&&b>=0&&a<GW&&b<GH)o[b*GW+a]=1}return o}
+function okWord(cv,ch,font){
+ const ink=cells(cv.getContext('2d'));let ic=0;for(let i=0;i<ink.length;i++)ic+=ink[i];if(ic<20)return false;
+ const mk=strip=>{const t=document.createElement('canvas');t.width=WW;t.height=WH;const c=t.getContext('2d');c.fillStyle='#000';paintWord(c,ch,font,strip);return cells(c)};
+ const full=mk(false),base=mk(true);
+ const I=dilW(ink,2),Dw=dilW(full,3),Bd=dilW(base,1);
+ let fc=0,fh=0,ih=0;
+ for(let i=0;i<full.length;i++){if(full[i]){fc++;if(I[i])fh++}if(ink[i]&&Dw[i])ih++}
+ if(!fc||fh/fc<.6||ih/ic<.7)return false;
+ /* every diacritic mark (fatha, damma, kasra, shadda, tanween...) must be traced too */
+ const dia=new Uint8Array(full.length);for(let i=0;i<full.length;i++)if(full[i]&&!Bd[i])dia[i]=1;
+ const seen=new Uint8Array(full.length);
+ for(let s0=0;s0<dia.length;s0++){if(!dia[s0]||seen[s0])continue;
+  const st=[s0];seen[s0]=1;let n=0,h=0;
+  while(st.length){const i=st.pop();n++;if(I[i])h++;const x=i%GW,y=(i/GW)|0;
+   for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){const a=x+dx,b=y+dy;if(a<0||b<0||a>=GW||b>=GH)continue;const j=b*GW+a;if(dia[j]&&!seen[j]){seen[j]=1;st.push(j)}}}
+  if(n>=4&&h/n<.45)return false}
+ return true}
+let A=null;
+function showLang(){$.innerHTML=`<h1>🦁 Jumanji</h1><p class="sub">اختار اللغة · Choose language</p>
+<div class="row" style="flex-direction:column;gap:16px;margin-top:30px"><button class="btn" style="font-size:1.8rem;padding:24px" onclick="arHome()">🌙 العربية</button><button class="btn blue" style="font-size:1.8rem;padding:24px;direction:ltr" onclick="home()">🔤 English</button></div>`}
+function arHome(){$.innerHTML=`<div class="top"><button class="back" onclick="showLang()">→ اللغة</button><span></span></div><h1>الحروف العربية</h1><p class="sub">اختار حرف وتعلّم الكلمات والتشكيل</p>
+<div class="row"><button class="btn" style="background:#9b5de5" onclick="arAlpha()">🔠 الحروف لوحدها (الأشكال والكتابة)</button></div>
+<div class="row"><button class="btn green" onclick="arReadMenu()">📖 تعلّم القراءة</button></div>
+<div class="row"><button class="btn blue" onclick="arTash()">🔊 الأصوات القصيرة والطويلة</button></div>
+<div class="row"><button class="btn gray" onclick="warned=false;aspeak('مَرْحَبًا يَا بَطَلُ')">🔈 اختبار الصوت العربي</button></div>
+<p class="sub" style="margin-top:14px">أو اختار حرف وتعلّم كلماته:</p>
+<div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(78px,1fr))">${AR.map((x,i)=>`<button class="btn" style="font-size:2.4rem;padding:8px" onclick="arLetter(${i})">${x[0]}</button>`).join('')}</div>
+<div class="row"><button class="btn green" onclick="arStart('all','quiz')">🏆 اختبار شامل ${best.ar_all?`<div class="best">أفضل: ${best.ar_all}⭐</div>`:''}</button></div>`}
+const bt=x=>`<button class="opt t" style="font-size:2rem" onclick="aspeak('${x}')">${x}</button>`;
+const arow=(t,a)=>`<p class="sub">${t}</p><div class="opts">${a.map(bt).join('')}</div>`;
+function arLetter(i){const[l,nm,ws]=AR[i];
+$.innerHTML=`<div class="top"><button class="back" onclick="arHome()">→ رجوع</button><span></span></div><h2>حرف ${nm}</h2><div class="big">${l}</div>
+${arow('الحركات القصيرة: فتحة · ضمة · كسرة',MK.map(m=>l+m))}${arow('الحركات الطويلة (بنمدّها)',MK.map(m=>l+m+LG[m]))}${arow('التنوين',TN.map(m=>l+m))}
+<h2 style="margin-top:18px">الكلمات</h2><div class="grid">${ws.map(w=>`<div class="card" onclick="aspeak('${w[0]}')"><div class="em">${w[1]}</div><div class="aw">${w[0]}</div></div>`).join('')}</div>
+<div class="row"><button class="btn" style="background:#9b5de5" onclick="arStart(${i},'write')">✍️ كتابة الكلمات</button><button class="btn" style="background:#b983f0" onclick="arStart(${i},'writeL')">✍️ كتابة الحرف</button></div>
+<div class="row"><button class="btn blue" onclick="arStart(${i},'practice')">🎯 تدريب</button><button class="btn green" onclick="arStart(${i},'quiz')">🏆 اختبار ${best['ar_'+i]?`<div class="best">أفضل: ${best['ar_'+i]}⭐</div>`:''}</button></div>`}
+function arTash(){const l='ب';
+$.innerHTML=`<div class="top"><button class="back" onclick="arHome()">→ رجوع</button><span></span></div><h2>الأصوات القصيرة والطويلة</h2>
+${arow('قصيرة: فتحة · ضمة · كسرة',MK.map(m=>l+m))}${arow('طويلة: ألف مد · واو مد · ياء مد',MK.map(m=>l+m+LG[m]))}${arow('التنوين: فتحتان · ضمتان · كسرتان',TN.map(m=>l+m))}
+<p class="sub" style="margin-top:14px">الصوت القصير بنقوله بسرعة، والطويل بنمدّه.</p>
+<div class="row"><button class="btn blue" onclick="arStart('tash','practice')">🎯 تدريب</button><button class="btn green" onclick="arStart('tash','quiz')">🏆 اختبار ${best.ar_tash?`<div class="best">أفضل: ${best.ar_tash}⭐</div>`:''}</button></div>`}
+function aq(t,li,j){const L=AR[li],q={t,li,ch:L[0]};if(j===undefined)j=rnd(L[2].length);const w=L[2][j];q.w=w;
+ const oth=sh(AW.filter(x=>x.w!==w[0])).slice(0,2),m=MK[rnd(3)];
+ if(t==='hear'){q.say=w[0];q.opts=sh([{t:w[1],c:'e',ok:1},...oth.map(o=>({t:o.e,c:'e'}))])}
+ else if(t==='see'){q.say=w[0];q.big=w[1];q.opts=sh([{t:w[0],c:'t',ok:1},...oth.map(o=>({t:o.w,c:'t'}))])}
+ else if(t==='build'){q.say=w[0];q.big=w[1];q.units=clus(w[0]);q.tiles=sh(q.units)}
+ else if(t==='wl'){q.say=L[0]+F}
+ else if(t==='ww'){q.say=w[0];q.big=w[1]}
+ else if(t==='har'){q.say=L[0]+m;q.big='؟';q.opts=sh(MK.map(x=>({t:L[0]+x,c:'t',ok:x===m?1:0})))}
+ else{const lg=rnd(2),syl=L[0]+m+(lg?LG[m]:'');q.say=syl;q.big=syl;q.opts=[{t:'قصير ⚡',c:'t',ok:lg?0:1},{t:'طويل 〰️',c:'t',ok:lg?1:0}]}
+ return q}
+function arStart(k,mode){let qs=[];
+ if(typeof k==='number'){if(mode==='write')qs=AR[k][2].map((_,j)=>aq('ww',k,j));
+  else if(mode==='writeL')qs=[0,1,2].map(()=>aq('wl',k));
+  else{AR[k][2].forEach((w,j)=>{qs.push(aq(j%2?'see':'hear',k,j),aq('build',k,j))});qs.push(aq('ww',k),aq('har',k),aq('len',k))}}
+ else if(k==='tash'){for(let n=0;n<10;n++)qs.push(aq(n%2?'len':'har',rnd(AR.length)))}
+ else{for(let n=0;n<12;n++)qs.push(aq(['hear','see','build','ww','har','len'][n%6],rnd(AR.length)))}
+ A={k,mode,i:0,score:0,qs:sh(qs),lock:false,pos:[]};G=A;arQ()}
+function arBack(){typeof A.k==='number'?arLetter(A.k):A.k==='tash'?arTash():arHome()}
+function arQ(){const q=A.qs[A.i];A.lock=false;A.pos=[];
+ const T={hear:'اسمع واختار الصورة الصح',see:'إيه اسم الصورة دى؟',har:'اسمع واختار الحرف بالحركة الصح',len:'الصوت قصير ولا طويل؟',build:'رتّب الحروف بالتشكيل عشان تكتب الكلمة',wl:'اسمع واكتب الحرف بصباعك ✍️',ww:'اسمع واكتب الكلمة كلها بالتشكيل بصباعك ✍️ (امشي على الخط)'}[q.t];
+ let b=`<p class="sub">${T}</p>`;
+ if(q.big)b+=`<div class="big" style="${q.t==='len'||q.t==='har'||q.t==='ww'?'font-size:4.5rem':''}">${q.big}</div>`;
+ if(q.say)b+=`<button class="say" onclick="aspeak('${q.say}')">🔊</button>`;
+ if(q.opts){const c=q.t==='len'?2:q.t==='see'?1:3;b+=`<div class="opts" style="grid-template-columns:repeat(${c},1fr)">${q.opts.map((o,i)=>`<button class="opt ${o.c}" onclick="aPick(${i})">${o.t}</button>`).join('')}</div>`}
+ else if(q.t==='build')b+=`<div class="slots" id="slots" style="direction:rtl"></div><div class="tiles" id="tiles" style="direction:rtl;flex-wrap:wrap"></div><div class="row" style="justify-content:center"><button class="btn gray" style="width:auto" onclick="aUndo()">↩️ مسح</button></div>`;
+ else if(q.t==='ww')b+=`<div class="pads"><div class="pad wp" id="pd0"><canvas class="gd" width="${WW}" height="${WH}"></canvas><canvas width="${WW}" height="${WH}" data-lw="7"></canvas></div></div><div class="row" style="justify-content:center"><button class="btn gray" style="width:auto" onclick="clearPads()">🧽 مسح</button><button class="btn green" style="width:auto;padding:14px 30px" onclick="arCheckPad()">تحقق ✅</button></div>`;
+ else b+=`<div class="pads"><div class="pad" id="pd0" style="max-width:170px"><span class="g ar ${A.mode!=='quiz'?'p':''}">${q.ch}</span><canvas width="110" height="130" data-font='bold 100px Tahoma,"Noto Naskh Arabic",Arial,sans-serif'></canvas></div></div><div class="row" style="justify-content:center"><button class="btn gray" style="width:auto" onclick="clearPads()">🧽 مسح</button><button class="btn green" style="width:auto;padding:14px 30px" onclick="arCheckPad()">تحقق ✅</button></div>`;
+ $.innerHTML=`<div class="top"><button class="back" onclick="arBack()">→ خروج</button><b>⭐ ${A.score}</b></div><div class="bar"><i style="width:${A.i/A.qs.length*100}%"></i></div>${b}<div class="fb" id="fb"></div>`;
+ if(q.t==='build')arDraw();if(q.t==='ww'){q.font=wordFont(q.w[0]);drawGuide(q,A.mode==='quiz'?.22:.38)}if(q.t==='wl'||q.t==='ww')initPads();
+ if(q.say&&q.t!=='see')setTimeout(()=>aspeak(q.say),300)}
+function aDone(ok,btn){const q=A.qs[A.i],f=document.getElementById('fb');
+ if(ok){if(!q.miss)A.score++;f.textContent='برافو! 🎉';f.style.color='var(--ok)';arCheer(q.say);A.lock=true;setTimeout(arNext,2300);return true}
+ q.miss=true;oops();f.style.color='var(--bad)';
+ if(A.mode!=='quiz'){f.textContent='حاول تانى 💪';if(btn){btn.classList.add('bad');setTimeout(()=>btn.classList.remove('bad'),500)}return false}
+ f.innerHTML='الإجابة: '+(q.opts?q.opts.find(o=>o.ok).t:q.t==='build'||q.t==='ww'?q.w[0]:q.ch);aspeak(q.say);A.lock=true;setTimeout(arNext,2200);return true}
+function aPick(i){if(A.lock)return;const q=A.qs[A.i],b=document.querySelectorAll('.opt')[i],ok=!!q.opts[i].ok;if(ok)b.classList.add('good');aDone(ok,b)}
+function arDraw(){const q=A.qs[A.i];
+ document.getElementById('slots').innerHTML=q.units.map((_,i)=>`<div class="slot" style="line-height:1.9;height:74px;width:auto;min-width:44px;padding:0 4px">${A.pos[i]!==undefined?q.tiles[A.pos[i]]:''}</div>`).join('');
+ document.getElementById('tiles').innerHTML=q.tiles.map((c,i)=>`<button class="tile" style="width:auto;min-width:56px;height:66px;padding:0 8px;line-height:1.7" ${A.pos.includes(i)?'disabled':''} onclick="aTile(${i})">${c}</button>`).join('')}
+function aTile(i){if(A.lock)return;const q=A.qs[A.i];A.pos.push(i);arDraw();
+ if(A.pos.length===q.units.length){const ok=A.pos.map(p=>q.tiles[p]).join('')===q.w[0];if(!aDone(ok))setTimeout(()=>{A.pos=[];arDraw()},700)}}
+function aUndo(){if(A.lock)return;A.pos.pop();arDraw()}
+function arCheckPad(){if(A.lock)return;const q=A.qs[A.i],cv=document.querySelector('.pad canvas:not(.gd)'),p=document.getElementById('pd0'),ok=q.t==='ww'?okWord(cv,q.w[0],q.font):okLetter(cv,q.ch);
+ if(ok){cv.dataset.ok=1;p.style.borderColor='var(--ok)';p.style.borderStyle='solid'}else p.style.borderColor='var(--bad)';
+ const fin=aDone(ok);
+ if(!ok&&!fin)setTimeout(()=>{cv.getContext('2d').clearRect(0,0,cv.width,cv.height);p.style.borderColor=''},800);
+ if(!ok&&fin){if(q.t==='ww')drawGuide(q,.9);else document.querySelector('.g').style.opacity=1}}
+function arNext(){A.i++;if(A.i<A.qs.length)return arQ();
+ const n=A.qs.length,p=A.score/n,st=p>=.9?3:p>=.6?2:p>=.3?1:0;if(A.mode==='quiz')save('ar_'+A.k,st);
+ const kk=typeof A.k==='number'?A.k:`'${A.k}'`;
+ $.innerHTML=`<h1>${A.mode==='quiz'?'🏆 النتيجة':'🎉 برافو'}</h1><div class="stars">${'⭐'.repeat(st)}${'☆'.repeat(3-st)}</div><h2>${A.score} / ${n}</h2><p class="sub">${st===3?'ممتاز يا بطل! 🦁':st>=1?'كويس جدًا، كمّل! 💪':'حاول تانى وهتبقى أحسن 😊'}</p>
+ <div class="row"><button class="btn" onclick="arStart(${kk},'${A.mode}')">🔁 مرة تانية</button><button class="btn blue" onclick="arBack()">🏠 رجوع</button></div>`}
+/* ===== Letters (English + Arabic): shapes, sounds, writing ===== */
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+const EN='abcdefghijklmnopqrstuvwxyz'.split('');
+const NM={a:'letter A',b:'bee',c:'see',d:'dee',e:'ee',f:'eff',g:'jee',h:'aitch',i:'eye',j:'jay',k:'kay',l:'ell',m:'em',n:'en',o:'oh',p:'pee',q:'cue',r:'are',s:'ess',t:'tee',u:'you',v:'vee',w:'double you',x:'ex',y:'why',z:'zee'};
+const EX={a:['apple','🍎','تفاحة'],b:['ball','⚽','كرة'],c:['cat','🐱','قطة'],d:['dog','🐶','كلب'],e:['egg','🥚','بيضة'],f:['fish','🐟','سمكة'],g:['goat','🐐','ماعز'],h:['hat','🎩','قبعة'],i:['iguana','🦎','إغوانا'],j:['jam','🍯','مربى'],k:['kite','🪁','طيارة ورق'],l:['lion','🦁','أسد'],m:['moon','🌙','قمر'],n:['nose','👃','أنف'],o:['orange','🍊','برتقالة'],p:['pig','🐷','خنزير'],q:['queen','👸','ملكة'],r:['rabbit','🐰','أرنب'],s:['sun','☀️','شمس'],t:['tree','🌳','شجرة'],u:['umbrella','☂️','شمسية'],v:['van','🚐','عربية'],w:['watch','⌚','ساعة'],x:['fox','🦊','ثعلب'],y:['yo-yo','🪀','يويو'],z:['zebra','🦓','حمار وحشي']};
+const ENC=['bdpq','mnhu','ilj','vwy','ceoa','ft','gqy','sz','kxh','rn'];
+function dist(c,gs,uni,n){n=n||2;let pool=[];gs.forEach(g=>{if(g.includes(c))[...g].forEach(x=>{if(x!==c&&!pool.includes(x))pool.push(x)})});
+ pool=sh(pool).slice(0,n);const rest=sh(uni.filter(x=>x!==c&&!pool.includes(x)));while(pool.length<n)pool.push(rest.shift());return pool}
+function enSay(c){try{const id=++seq,s=window.speechSynthesis;s.cancel();const u=mk(NM[c],.8);u.onend=()=>{if(id===seq)say1(PH[c],.55)};s.speak(u)}catch(e){}}
+function enAlpha(){cur='enA';
+ $.innerHTML=`<div class="top"><button class="back" onclick="home()">→ رجوع</button><span></span></div><h1>🔠 الحروف</h1><p class="sub">اضغط على الحرف واتعلّم شكله وصوته واكتبه</p>
+<div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(78px,1fr));direction:ltr">${EN.map((c,i)=>`<button class="btn" style="font-size:1.9rem;padding:10px 4px;background:${i%2?'#4895ef':'#ff7a00'}" onclick="enLetter(${i})">${c.toUpperCase()}${c}</button>`).join('')}</div>
+<div class="row"><button class="btn blue" onclick="leStart('en','all','practice')">🎯 تدريب على كل الحروف</button><button class="btn green" onclick="leStart('en','all','quiz')">🏆 اختبار ${best.enl_all?`<div class="best">أفضل: ${best.enl_all}⭐</div>`:''}</button></div>`}
+function enLetter(i){const c=EN[i],C=c.toUpperCase(),x=EX[c],w=x[0],p=w.indexOf(c);
+ $.innerHTML=`<div class="top"><button class="back" onclick="enAlpha()">→ الحروف</button><span></span></div>
+<div class="big" style="font-size:7rem;direction:ltr;color:var(--pri)">${C} ${c}</div>
+<button class="say" onclick="enSay('${c}')">🔊</button>
+<p class="sub">الاسم: <b dir="ltr">${C}</b> · الصوت: <b dir="ltr">${PH[c][0]==='#'?PL[c]:PH[c]}</b></p>
+<div class="card" style="max-width:240px;margin:0 auto 14px" onclick="speak('${w}')"><div class="em">${x[1]}</div><div class="w">${w.slice(0,p)}<b>${c}</b>${w.slice(p+1)}</div><div class="ar">${x[2]}</div></div>
+<div class="row"><button class="btn" style="background:#9b5de5" onclick="leStart('en',${i},'write')">✍️ اكتب الحرف (كبير وصغير)</button></div>
+<div class="row"><button class="btn blue" onclick="leStart('en',${i},'practice')">🎯 تدريب</button><button class="btn green" onclick="leStart('en',${i},'quiz')">🏆 اختبار ${best['enl_'+i]?`<div class="best">أفضل: ${best['enl_'+i]}⭐</div>`:''}</button></div>
+<div class="row"><button class="btn gray" onclick="enLetter(${(i+25)%26})">→ السابق</button><button class="btn gray" onclick="enLetter(${(i+1)%26})">التالي ←</button></div>`;
+ setTimeout(()=>enSay(c),300)}
+function enQ(t,c){const C=c.toUpperCase(),up=Math.random()<.5;if(t==='pic'&&c==='x')t='match';
+ const q={lang:'en',t,c,chars:[C,c]};
+ if(t==='hear'){q.opts=sh([c,...dist(c,ENC,EN)]).map(x=>({t:up?x.toUpperCase():x,ok:x===c}))}
+ else if(t==='match'){q.up=up;q.big=up?C:c;q.opts=sh([c,...dist(c,ENC,EN)]).map(x=>({t:up?x:x.toUpperCase(),ok:x===c}))}
+ else if(t==='pic'){q.big=C+' '+c;const oth=sh(EN.filter(x=>x!==c&&x!=='x')).slice(0,2);q.opts=sh([c,...oth]).map(x=>({t:EX[x][1],e:1,ok:x===c}))}
+ return q}
+/* Arabic letters */
+const ZW='\u200D';
+const ARLD=[
+['ا','ألف','أَسَدٌ','🦁',0],['ب','باء','بَطَّةٌ','🦆',1],['ت','تاء','تُفَّاحَةٌ','🍎',1],['ث','ثاء','ثَعْلَبٌ','🦊',1],['ج','جيم','جَمَلٌ','🐪',1],['ح','حاء','حِصَانٌ','🐴',1],['خ','خاء','خَرُوفٌ','🐑',1],
+['د','دال','دَجَاجَةٌ','🐔',0],['ذ','ذال','ذُرَةٌ','🌽',0],['ر','راء','رِيشَةٌ','🪶',0],['ز','زاي','زَرَافَةٌ','🦒',0],['س','سين','سَمَكَةٌ','🐟',1],['ش','شين','شَمْسٌ','☀️',1],
+['ص','صاد','صَابُونٌ','🧼',1],['ض','ضاد','ضِفْدَعٌ','🐸',1],['ط','طاء','طَائِرَةٌ','✈️',1],['ظ','ظاء','ظَرْفٌ','✉️',1],['ع','عين','عِنَبٌ','🍇',1],['غ','غين','غَيْمَةٌ','☁️',1],
+['ف','فاء','فِيلٌ','🐘',1],['ق','قاف','قَمَرٌ','🌙',1],['ك','كاف','كِتَابٌ','📖',1],['ل','لام','لَيْمُونٌ','🍋',1],['م','ميم','مَوْزٌ','🍌',1],['ن','نون','نَحْلَةٌ','🐝',1],
+['ه','هاء','هَدِيَّةٌ','🎁',1],['و','واو','وَرْدَةٌ','🌹',0],['ي','ياء','يَدٌ','✋',1]];
+const ARC=ARLD.map(x=>x[0]);
+const ARG=['بتثني','جحخ','دذ','رز','سش','صض','طظ','عغ','فق','كلا','موه'];
+const ARF='bold 100px Tahoma,"Noto Naskh Arabic",Arial,sans-serif';
+const FM=E=>E[4]?[['أول الكلمة',E[0]+ZW],['وسط الكلمة',ZW+E[0]+ZW],['آخر الكلمة',ZW+E[0]]]:[['آخر الكلمة',ZW+E[0]]];
+const arE=c=>ARLD.find(x=>x[0]===c);
+function arLSay(c){const E=arE(c);seq++;const id=seq;aStop();setTimeout(async()=>{if(id!==seq)return;await asay(E[1],.7);if(id!==seq)return;await asay(c+F,.6)},80)}
+function arAlpha(){
+ $.innerHTML=`<div class="top"><button class="back" onclick="arHome()">→ رجوع</button><span></span></div><h1>🔠 الحروف</h1><p class="sub">اضغط على الحرف واتعلّم شكله وصوته واكتبه</p>
+<div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(78px,1fr))">${ARLD.map((x,i)=>`<button class="btn" style="font-size:2.6rem;padding:8px;background:${i%2?'#4895ef':'#ff7a00'}" onclick="arLetterP(${i})">${x[0]}</button>`).join('')}</div>
+<div class="row"><button class="btn blue" onclick="leStart('ar','all','practice')">🎯 تدريب على كل الحروف</button><button class="btn green" onclick="leStart('ar','all','quiz')">🏆 اختبار ${best.arl_all?`<div class="best">أفضل: ${best.arl_all}⭐</div>`:''}</button></div>`}
+function arLetterP(i){const E=ARLD[i],f=FM(E),wi=AR.findIndex(x=>x[0]===(E[0]==='ا'?'أ':E[0]));
+ $.innerHTML=`<div class="top"><button class="back" onclick="arAlpha()">→ الحروف</button><span></span></div>
+<h2>حرف ${E[1]}</h2><div class="big" style="font-size:7rem;color:var(--pri)">${E[0]}</div>
+<button class="say" onclick="arLSay('${E[0]}')">🔊</button>
+<p class="sub">شكل الحرف لوحده وفي الكلمة</p>
+<div class="forms">${[['لوحده',E[0]],...f].map(x=>`<div class="fm"><b>${x[1]}</b><small>${x[0]}</small></div>`).join('')}</div>
+<div class="card" style="max-width:240px;margin:0 auto 14px" onclick="aspeak('${E[2]}')"><div class="em">${E[3]}</div><div class="aw">${E[2]}</div></div>
+<div class="row"><button class="btn" style="background:#9b5de5" onclick="leStart('ar',${i},'write')">✍️ اكتب الحرف</button></div>
+<div class="row"><button class="btn blue" onclick="leStart('ar',${i},'practice')">🎯 تدريب</button><button class="btn green" onclick="leStart('ar',${i},'quiz')">🏆 اختبار ${best['arl_'+i]?`<div class="best">أفضل: ${best['arl_'+i]}⭐</div>`:''}</button></div>
+${wi>=0?`<div class="row"><button class="btn gray" onclick="arLetter(${wi})">📚 كلمات الحرف</button><button class="btn gray" onclick="arReadStart(${wi})">📖 اقرأ الكلمات</button></div>`:''}
+<div class="row"><button class="btn gray" onclick="arLetterP(${(i+27)%28})">→ السابق</button><button class="btn gray" onclick="arLetterP(${(i+1)%28})">التالي ←</button></div>`;
+ setTimeout(()=>arLSay(E[0]),300)}
+function arQL(t,c){const E=arE(c),q={lang:'ar',t,c,chars:[c]};
+ if(t==='hear'||t==='form'){q.opts=sh([c,...dist(c,ARG,ARC)]).map(x=>({t:x,ok:x===c}))}
+ if(t==='form'){const f=FM(E),p=f[rnd(f.length)];q.pos=p[0];q.big=p[1]}
+ else if(t==='pic'){q.big=c;const oth=sh(ARLD.filter(x=>x[0]!==c)).slice(0,2);q.opts=sh([E,...oth]).map(x=>({t:x[3],e:1,ok:x[0]===c}))}
+ return q}
+/* shared engine for letters-only practice */
+let LE=null;
+function leStart(lang,k,mode){const en=lang==='en',U=en?EN:ARC,mkq=en?enQ:arQL,TY=en?['hear','match','pic','write']:['hear','form','pic','write'];let qs=[];
+ if(typeof k==='number'){const c=U[k];
+  if(mode==='write')qs=[.35,.15,0].map(g=>Object.assign(mkq('write',c),{gh:g}));
+  else if(mode==='practice')qs=sh([TY[0],TY[1],TY[2],TY[3],TY[1],TY[2],TY[3]].map(t=>mkq(t,c)));
+  else qs=sh([TY[0],TY[2],TY[1],TY[2],TY[0],TY[1],TY[3],TY[3]].map(t=>mkq(t,c)))}
+ else{const n=mode==='quiz'?12:10;qs=sh(U).slice(0,n).map((c,j)=>mkq(TY[j%4],c))}
+ qs.forEach(q=>{if(q.gh===undefined)q.gh=mode==='quiz'?.13:.3});
+ LE={lang,k,mode,i:0,score:0,qs,lock:false};G=LE;leQ()}
+function leBack(){const k=LE.k;if(LE.lang==='en')typeof k==='number'?enLetter(k):enAlpha();else typeof k==='number'?arLetterP(k):arAlpha()}
+function leSay(){const q=LE.qs[LE.i];LE.lang==='en'?enSay(q.c):arLSay(q.c)}
+function leQ(){const q=LE.qs[LE.i],ar=LE.lang==='ar';LE.lock=false;
+ const T={hear:'اسمع واختار الحرف الصح',match:q.up?'إيه الحرف الصغير بتاع ده؟':'إيه الحرف الكبير بتاع ده؟',form:'ده شكل الحرف في '+q.pos+' — هو حرف إيه؟',pic:'اختار الصورة اللي اسمها بيبدأ بالحرف ده',write:ar?'اسمع واكتب الحرف بصباعك ✍️':'اسمع واكتب الحرف الكبير والصغير بصباعك ✍️'}[q.t];
+ let b=`<p class="sub">${T}</p>`;
+ if(q.big)b+=`<div class="big" style="${ar?'':'direction:ltr;'}${q.t==='form'?'font-size:6rem':''}">${q.big}</div>`;
+ if(q.t==='hear'||q.t==='pic'||q.t==='write')b+=`<button class="say" onclick="leSay()">🔊</button>`;
+ if(q.opts)b+=`<div class="opts">${q.opts.map((o,i)=>`<button class="opt ${o.e?'e':'t'}" ${o.e?'':`style="font-size:${ar?3.2:2.8}rem"`} onclick="lePick(${i})">${o.t}</button>`).join('')}</div>`;
+ else b+=`<div class="pads">${q.chars.map((ch,i)=>`<div class="pad" id="pd${i}" ${ar?'style="max-width:170px"':''}><span class="g ${ar?'ar':''}" style="opacity:${q.gh}">${ch}</span><canvas id="cv${i}" width="110" height="130" ${ar?`data-font='${ARF}'`:''}></canvas></div>`).join('')}</div><div class="row" style="justify-content:center"><button class="btn gray" style="width:auto" onclick="clearPads()">🧽 مسح</button><button class="btn green" style="width:auto;padding:14px 30px" onclick="leCheck()">تحقق ✅</button></div>`;
+ $.innerHTML=`<div class="top"><button class="back" onclick="leBack()">→ خروج</button><b>⭐ ${LE.score}</b></div><div class="bar"><i style="width:${LE.i/LE.qs.length*100}%"></i></div>${b}<div class="fb" id="fb"></div>`;
+ if(!q.opts)initPads();
+ if(q.t==='hear'||q.t==='pic'||q.t==='write')setTimeout(leSay,300)}
+function leCheer(q){if(q.lang==='en')cheer(NM[q.c]);else arCheer(arE(q.c)[1])}
+function leDone(ok,btn){const q=LE.qs[LE.i],f=document.getElementById('fb');
+ if(ok){if(!q.miss)LE.score++;f.textContent=q.lang==='en'?'برافو! 🎉 Good job!':'برافو! 🎉';f.style.color='var(--ok)';leCheer(q);LE.lock=true;setTimeout(leNext,2300);return true}
+ q.miss=true;oops();f.style.color='var(--bad)';
+ if(LE.mode!=='quiz'){f.textContent='حاول تانى 💪';if(btn){btn.classList.add('bad');setTimeout(()=>btn.classList.remove('bad'),500)}return false}
+ f.textContent='الإجابة: '+(q.opts?q.opts.find(o=>o.ok).t:q.chars.join(' '));leSay();LE.lock=true;setTimeout(leNext,2200);return true}
+function lePick(i){if(LE.lock)return;const q=LE.qs[LE.i],b=document.querySelectorAll('.opt')[i],ok=!!q.opts[i].ok;if(ok)b.classList.add('good');leDone(ok,b)}
+function leCheck(){if(LE.lock)return;const q=LE.qs[LE.i],cvs=[...document.querySelectorAll('.pad canvas:not(.gd)')];let all=true;
+ cvs.forEach((cv,i)=>{const p=document.getElementById('pd'+i);if(cv.dataset.ok)return;
+  if(okLetter(cv,q.chars[i])){cv.dataset.ok=1;p.style.borderColor='var(--ok)';p.style.borderStyle='solid'}else{all=false;p.style.borderColor='var(--bad)'}});
+ const fin=leDone(all);
+ if(!all&&!fin)cvs.forEach((cv,i)=>{if(!cv.dataset.ok)setTimeout(()=>{cv.getContext('2d').clearRect(0,0,cv.width,cv.height);document.getElementById('pd'+i).style.borderColor=''},800)});
+ if(!all&&fin)document.querySelectorAll('.g').forEach(g=>{g.style.opacity=1})}
+function leNext(){LE.i++;if(LE.i<LE.qs.length)return leQ();
+ const n=LE.qs.length,p=LE.score/n,st=p>=.9?3:p>=.6?2:p>=.3?1:0;if(LE.mode==='quiz')save(LE.lang+'l_'+LE.k,st);
+ const kk=typeof LE.k==='number'?LE.k:`'all'`;
+ $.innerHTML=`<h1>${LE.mode==='quiz'?'🏆 النتيجة':'🎉 برافو'}</h1><div class="stars">${'⭐'.repeat(st)}${'☆'.repeat(3-st)}</div><h2>${LE.score} / ${n}</h2><p class="sub">${st===3?'ممتاز يا بطل! 🦁':st>=1?'كويس جدًا، كمّل! 💪':'حاول تانى وهتبقى أحسن 😊'}</p>
+ <div class="row"><button class="btn" onclick="leStart('${LE.lang}',${kk},'${LE.mode}')">🔁 مرة تانية</button><button class="btn blue" onclick="leBack()">🏠 رجوع</button></div>`}
+/* ===== Learn to read: English ===== */
+function segs(w){const o=[];let i=0,vf=false;
+ while(i<w.length){const two=w.slice(i,i+2);let t,s;
+  if(two==='sh'){t=two;s='#sh';i+=2}else if(two==='kn'){t=two;s='nuh';i+=2}else{t=w[i];s=PH[t]||t;i++}
+  const v='aeiou'.includes(t)&&!vf;if(v)vf=true;o.push({t,s,v})}
+ return o}
+/* pure sounds made by the browser itself (TTS can't say a lone vowel or 'sh') */
+const VG={a:6,e:5.4,i:4,o:6,u:5.6},VFM={a:[660,1720,2410],e:[530,1840,2480],i:[390,1990,2550],o:[730,1090,2440],u:[640,1190,2390]},PL={a:'æ',e:'ɛ',i:'ɪ',o:'ɑ',u:'ʌ'};
+function buildSnd(c,dest,t,k){const d=k==='sh'?.8:.8,peak=k==='sh'?.7:.3,g=c.createGain();
+ g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(peak,t+(k==='sh'?.1:.25));g.gain.setValueAtTime(peak,t+d-.25);g.gain.exponentialRampToValueAtTime(.0001,t+d);g.connect(dest);
+ if(k==='sh'){const n=Math.floor(c.sampleRate*d),b=c.createBuffer(1,n,c.sampleRate),a=b.getChannelData(0);for(let i=0;i<n;i++)a[i]=Math.random()*2-1;
+  const sr=c.createBufferSource();sr.buffer=b;const f=c.createBiquadFilter();f.type='bandpass';f.frequency.value=3200;f.Q.value=.8;const hp=c.createBiquadFilter();hp.type='highpass';hp.frequency.value=1800;sr.connect(f);f.connect(hp);hp.connect(g);sr.start(t);sr.stop(t+d)}
+ else{const o=c.createOscillator(),re=new Float32Array(24),im=new Float32Array(24);for(let n=1;n<24;n++)im[n]=1/(n*n);o.setPeriodicWave(c.createPeriodicWave(re,im));
+  o.frequency.setValueAtTime(230,t);o.frequency.linearRampToValueAtTime(205,t+d);
+  const lf=c.createOscillator(),lg=c.createGain();lf.frequency.value=5;lg.gain.value=3;lf.connect(lg);lg.connect(o.frequency);lf.start(t);lf.stop(t+d);
+  const lp=c.createBiquadFilter();lp.type='lowpass';lp.frequency.value=2600;lp.connect(g);
+  VFM[k].slice(0,2).forEach((fr,j)=>{const f=c.createBiquadFilter();f.type='bandpass';f.frequency.value=fr;f.Q.value=4;const q=c.createGain();q.gain.value=[1,.8][j]*VG[k];o.connect(f);f.connect(q);q.connect(lp)});o.start(t);o.stop(t+d)}
+ return d}
+/* vowels: a real TTS voice says a short word, and we cut it right after the vowel (CUT = ms to keep) */
+const VW={a:'apple',e:'Ed',i:'it',o:'odd',u:'up'},CUT={a:300,e:310,i:260,o:350,u:300};
+function vowelTTS(k){return new Promise((res,bad)=>{try{const sy=window.speechSynthesis;let d=false;const fin=()=>{if(!d){d=true;clearTimeout(tm);res()}};
+ const u=mk(VW[k],.45,1.05);const tm=setTimeout(()=>{try{sy.cancel()}catch(e){}fin()},1800);
+ u.onstart=()=>setTimeout(()=>{try{sy.cancel()}catch(e){}fin()},CUT[k]);u.onend=u.onerror=fin;sy.speak(u)}catch(e){bad(e)}})}
+function synth(k){if(k!=='sh')return vowelTTS(k).catch(()=>synth0(k));return synth0(k)}
+function synth0(k){return new Promise(res=>{try{const c=ctx(),d=buildSnd(c,c.destination,c.currentTime+.02,k);setTimeout(res,d*1000+80)}catch(e){res()}})}
+function say1(t,r){return t[0]==='#'?synth(t.slice(1)):esay(t,r)}
+function esay(t,r,p){return new Promise(res=>{try{let d=false;const u=mk(t,r,p),f=()=>{if(!d){d=true;clearTimeout(tm);res()}},tm=setTimeout(f,4000);u.onend=u.onerror=f;speechSynthesis.speak(u)}catch(e){res()}})}
+let RD=null,RDS=[];
+function readMenu(){
+ $.innerHTML=`<div class="top"><button class="back" onclick="home()">→ رجوع</button><span></span></div><h1>📖 تعلّم القراءة</h1>
+<div class="steps"><b>إزاى نقرأ كلمة؟</b><br>١) اضغط على كل حرف واسمع صوته 👆<br>٢) قول الأصوات ورا بعض بسرعة: s … i … t<br>٣) اسمع الكلمة كاملة: sit 🎉<br>٤) اضغط 👁️ تشوف الصورة وتتأكد</div>
+<p class="sub">اختار المجموعة:</p>
+<div class="grid">${V.map((v,i)=>`<button class="btn" onclick="readStart('${v.toLowerCase()}')" style="background:${VCOL[i]}"><div class="v">${v}</div>${SETS[v.toLowerCase()].title}</button>`).join('')}</div>
+<div class="row"><button class="btn green" onclick="readStart('all')">🎲 كلمات مختلطة</button></div>`}
+function readStart(k){RD={k,list:k==='all'?sh(ALL):SETS[k].words,i:0};readWord()}
+function readWord(){const w=RD.list[RD.i];RDS=segs(w[0]);
+ $.innerHTML=`<div class="top"><button class="back" onclick="readMenu()">→ رجوع</button><b>${RD.i+1} / ${RD.list.length}</b></div><div class="bar"><i style="width:${(RD.i+1)/RD.list.length*100}%"></i></div>
+<p class="sub">اضغط على كل حرف واسمع صوته 👆</p>
+<div class="segs" id="rd">${RDS.map((s,i)=>`<button class="seg ${s.v?'vw':''}" onclick="rdTap(${i})">${s.t}</button>`).join('')}</div>
+<div class="row"><button class="btn" onclick="rdSound()">▶️ فكّ الكلمة</button></div>
+<div class="row"><button class="btn blue" onclick="speak('${w[0]}')">🔊 الكلمة كاملة</button><button class="btn gray" onclick="rdShow()">👁️ الصورة</button></div>
+<div id="rdpic" class="big" style="min-height:1.4em"></div>
+<div class="row"><button class="btn gray" onclick="rdMove(-1)" ${RD.i?'':'disabled'}>→ السابق</button><button class="btn gray" onclick="rdMove(1)" ${RD.i<RD.list.length-1?'':'disabled'}>التالي ←</button></div>`}
+function rdMove(d){seq++;try{speechSynthesis.cancel()}catch(e){}RD.i+=d;readWord()}
+function rdTap(i){const t=document.querySelectorAll('#rd .seg')[i];seq++;try{speechSynthesis.cancel()}catch(e){}say1(RDS[i].s,.55);if(t){t.classList.add('on');setTimeout(()=>t.classList.remove('on'),600)}}
+function rdShow(){const w=RD.list[RD.i];document.getElementById('rdpic').innerHTML=`${w[1]}<div class="ar" style="font-size:1.2rem">${w[2]}</div>`;speak(w[0])}
+async function rdSound(){const id=++seq;try{speechSynthesis.cancel()}catch(e){}const t=[...document.querySelectorAll('#rd .seg')],w=RD.list[RD.i][0];
+ for(let i=0;i<t.length;i++){if(id!==seq)return;t.forEach(x=>x.classList.remove('on'));t[i].classList.add('on');await say1(RDS[i].s,.5);await wait(RDS[i].v||(RDS[i+1]&&RDS[i+1].v)?900:650)}
+ if(id!==seq)return;t.forEach(x=>x.classList.add('on'));await esay(w,.45);if(id!==seq)return;await wait(200);await esay(w,.8);t.forEach(x=>x.classList.remove('on'))}
+/* ===== Learn to read: Arabic ===== */
+function syl(w){const out=[];
+ for(const c of clus(w)){const base=c[0],marks=c.slice(1),sd=marks.includes('\u0651'),sv=/[\u064B-\u0650]/.test(marks);
+  if(!out.length){out.push(c);continue}
+  if(base==='ة'||(!sv&&!sd)){out[out.length-1]+=c;continue}
+  if(sd){out[out.length-1]+=base+'\u0652';out.push(base+marks.replace('\u0651',''));continue}
+  out.push(c)}
+ return out}
+let ARD=null,ARS=[],ARW='';
+function arReadMenu(){
+ $.innerHTML=`<div class="top"><button class="back" onclick="arHome()">→ رجوع</button><span></span></div><h1>📖 تعلّم القراءة</h1>
+<div class="steps"><b>إزاى نقرأ كلمة؟</b><br>١) الحرف + الحركة = مقطع: بَ ، بُ ، بِ<br>٢) اقرأ كل مقطع لوحده 👆<br>٣) ركّب المقاطع ورا بعض بسرعة: بَ + قَ + رَةٌ<br>٤) اسمع الكلمة كاملة: بَقَرَةٌ 🎉</div>
+<div class="row"><button class="btn blue" onclick="arTash()">🔊 الأول: الحرف + الحركة</button></div>
+<p class="sub" style="margin-top:14px">بعدين اختار حرف واقرأ كلماته:</p>
+<div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(78px,1fr))">${AR.map((x,i)=>`<button class="btn" style="font-size:2.4rem;padding:8px" onclick="arReadStart(${i})">${x[0]}</button>`).join('')}</div>
+<div class="row"><button class="btn green" onclick="arReadStart('all')">🎲 كلمات مختلطة</button></div>`}
+function arReadStart(k){ARD={k,list:k==='all'?sh(AW.map(x=>[x.w,x.e])):AR[k][2],i:0};arReadWord()}
+function arReadWord(){const w=ARD.list[ARD.i];ARW=w[0];ARS=syl(w[0]);
+ $.innerHTML=`<div class="top"><button class="back" onclick="arReadMenu()">→ رجوع</button><b>${ARD.i+1} / ${ARD.list.length}</b></div><div class="bar"><i style="width:${(ARD.i+1)/ARD.list.length*100}%"></i></div>
+<p class="sub">اضغط على كل مقطع واسمعه 👆</p>
+<div class="segs rtl" id="rd">${ARS.map((s,i)=>`<button class="seg ar" onclick="arRdTap(${i})">${s}</button>`).join('')}</div>
+<div class="row"><button class="btn" onclick="arRdSound()">▶️ فكّ الكلمة</button></div>
+<div class="row"><button class="btn blue" onclick="aspeak(ARW)">🔊 الكلمة كاملة</button><button class="btn gray" onclick="arRdShow()">👁️ الصورة</button></div>
+<div id="rdpic" class="big" style="min-height:1.4em"></div>
+<div class="row"><button class="btn gray" onclick="arRdMove(-1)" ${ARD.i?'':'disabled'}>→ السابق</button><button class="btn gray" onclick="arRdMove(1)" ${ARD.i<ARD.list.length-1?'':'disabled'}>التالي ←</button></div>`}
+function arRdMove(d){seq++;aStop();ARD.i+=d;arReadWord()}
+function arRdTap(i){const t=document.querySelectorAll('#rd .seg')[i];aspeak(ARS[i],.6);if(t){t.classList.add('on');setTimeout(()=>t.classList.remove('on'),700)}}
+function arRdShow(){document.getElementById('rdpic').textContent=ARD.list[ARD.i][1];aspeak(ARW)}
+async function arRdSound(){const id=++seq;aStop();const t=[...document.querySelectorAll('#rd .seg')];
+ for(let i=0;i<t.length;i++){if(id!==seq)return;t.forEach(x=>x.classList.remove('on'));t[i].classList.add('on');await asay(ARS[i],.6);await wait(120)}
+ if(id!==seq)return;t.forEach(x=>x.classList.add('on'));await asay(ARW,.7);t.forEach(x=>x.classList.remove('on'))}
+showLang();
+</script>
+</body>
+</html>
